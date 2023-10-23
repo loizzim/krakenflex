@@ -25,7 +25,7 @@ def invoke_post(endpoint,data):
 #call the function to get the data from outages and site_info endpoint
 outages = invoke_get("outages")
 info= invoke_get("site-info/norwich-pear-tree")
-
+devices = info["devices"]
 #print(outages)
 print("---------------------------------------------------------------------------------------")
 
@@ -36,9 +36,8 @@ print("-------------------------------------------------------------------------
 devices = info["devices"]
 #print(f"this is the list of {devices}")
 
-#print("---------------------------------------------------------------------------------------")
 
-#set an empty list where to store the devices id 
+#set an empty list wh  to store the devices id 
 device_id_info = []
 
 for devices_index in devices:
