@@ -1,9 +1,9 @@
 import unittest
 from kraken import Kraken
 
-class Test_Kraken(unittest.TestCase):
+class KrakenTest(unittest.TestCase):
     def setUp(self):
-        self.endpoint = Kraken()
+        self.kraken = Kraken()
 
     def test_filter_outages_propoperly_filters_data_based_on_ids_and_date(self):
         #  sample input data from the outages call 
@@ -17,7 +17,7 @@ class Test_Kraken(unittest.TestCase):
 
         device_id_info = ['20f6e664-f00e-4621-9ca4-5ec588aadeaf', '75e96db4-bba2-4035-8f43-df2cbd3da859', '20f6e664-f00e-4621-9ca4-5ec588aadeaf', '75e96db4-bba2-4035-8f43-df2cbd3da859']  
         #`2022-01-01T00:00:00.000Z`
-        actual = self.endpoint.filter_outages(outages, device_id_info)
+        actual = self.kraken.filter_outages(outages, device_id_info)
 
         expected = [
             {'id': '20f6e664-f00e-4621-9ca4-5ec588aadeaf', 'begin': '2023-02-15T11:28:26.965Z', 'end': '2023-12-24T14:20:37.532Z'},
@@ -28,7 +28,6 @@ class Test_Kraken(unittest.TestCase):
         self.assertEqual(expected,actual)
 
     def test_filter_outages_returns_empty_list_if_device_ids_is_empty(self):
-
         device_id =[]
         # sample outages
         outages = [
@@ -39,7 +38,7 @@ class Test_Kraken(unittest.TestCase):
             {'id': 'a79fe094-087b-4b1e-ae20-ac4bf7fa429b', 'begin': '2021-02-23T11:33:58.552Z', 'end': '2022-12-16T00:52:16.126Z'}
         ]
 
-        actual = self.endpoint.filter_outages(outages, device_id)
+        actual = self.kraken.filter_outages(outages, device_id)
         expected = []
         self.assertEqual(expected,actual)
 
@@ -53,15 +52,14 @@ class Test_Kraken(unittest.TestCase):
        
         outages = []
 
-        actual = self.endpoint.filter_outages(outages, device_id)
+        actual = self.kraken.filter_outages(outages, device_id)
         expected = []
         self.assertEqual(expected,actual)
 
 
-    def test_extract_device_id_is_working_properly(self):
-    
+    def test_extract_device_ids_is_working_properly(self):
         #device info data sample
-        device_info = {'id': 'norwich-pear-tree', 'name': 'Norwich Pear Tree', 'devices': [
+        site_info = {'id': 'norwich-pear-tree', 'name': 'Norwich Pear Tree', 'devices': [
             {'id': '111183e7-fb90-436b-9951-63392b36bdd2', 'name': 'Battery 1'}, 
             {'id': '86b5c819-6a6c-4978-8c51-a2d810bb9318', 'name': 'Battery 2'},
             {'id': '70656668-571e-49fa-be2e-099c67d136ab', 'name': 'Battery 3'},
@@ -81,12 +79,11 @@ class Test_Kraken(unittest.TestCase):
                     '75e96db4-bba2-4035-8f43-df2cbd3da859'
                     ]
         
-        actual = self.endpoint.extract_device_id(device_info)
+        actual = self.kraken.extract_device_ids(site_info)
         self.assertEqual(expected,actual)
 
-    def test_outages_with_name_adds_name_from_devices_info_to_outages_list(self):
-        
-        filtered_outages = [{'id': '0e4d59ba-43c7-4451-a8ac-ca628bcde417', 'begin': '2022-02-15T11:28:26.735Z', 'end': '2022-08-28T03:37:48.568Z'}, 
+    def test_enrich_outages_with_names_adds_name_from_devices_info_to_outages_list(self):
+        outages = [{'id': '0e4d59ba-43c7-4451-a8ac-ca628bcde417', 'begin': '2022-02-15T11:28:26.735Z', 'end': '2022-08-28T03:37:48.568Z'}, 
                             {'id': '111183e7-fb90-436b-9951-63392b36bdd2', 'begin': '2022-01-01T00:00:00.000Z', 'end': '2022-09-15T19:45:10.341Z'},
                             {'id': '111183e7-fb90-436b-9951-63392b36bdd2', 'begin': '2022-02-18T01:01:20.142Z', 'end': '2022-08-15T14:34:50.366Z'}, 
                             {'id': '20f6e664-f00e-4621-9ca4-5ec588aadeaf', 'begin': '2022-02-15T11:28:26.965Z', 'end': '2023-12-24T14:20:37.532Z'}, 
@@ -98,7 +95,6 @@ class Test_Kraken(unittest.TestCase):
                             {'id': 'a79fe094-087b-4b1e-ae20-ac4bf7fa429b', 'begin': '2022-02-23T11:33:58.552Z', 'end': '2022-12-16T00:52:16.126Z'}]
 
         # sample devices ids and names
-
         devices = [{'id': '111183e7-fb90-436b-9951-63392b36bdd2', 'name': 'Battery 1'}, 
                     {'id': '86b5c819-6a6c-4978-8c51-a2d810bb9318', 'name': 'Battery 2'}, 
                     {'id': '70656668-571e-49fa-be2e-099c67d136ab', 'name': 'Battery 3'}, 
@@ -108,8 +104,8 @@ class Test_Kraken(unittest.TestCase):
                     {'id': '20f6e664-f00e-4621-9ca4-5ec588aadeaf', 'name': 'Battery 7'}, 
                     {'id': '75e96db4-bba2-4035-8f43-df2cbd3da859', 'name': 'Battery 8'}
                    ]
-        # expected result
         
+        # expected result
         expected = [{'id': '0e4d59ba-43c7-4451-a8ac-ca628bcde417', 'begin': '2022-02-15T11:28:26.735Z', 'end': '2022-08-28T03:37:48.568Z', 'name': 'Battery 6'}, 
                     {'id': '111183e7-fb90-436b-9951-63392b36bdd2', 'begin': '2022-01-01T00:00:00.000Z', 'end': '2022-09-15T19:45:10.341Z', 'name': 'Battery 1'}, 
                     {'id': '111183e7-fb90-436b-9951-63392b36bdd2', 'begin': '2022-02-18T01:01:20.142Z', 'end': '2022-08-15T14:34:50.366Z', 'name': 'Battery 1'}, 
@@ -121,9 +117,10 @@ class Test_Kraken(unittest.TestCase):
                     {'id': '9ed11921-1c5b-40f4-be66-adb4e2f016bd', 'begin': '2022-01-12T08:11:21.333Z', 'end': '2022-12-13T07:20:57.984Z', 'name': 'Battery 4'}, 
                     {'id': 'a79fe094-087b-4b1e-ae20-ac4bf7fa429b', 'begin': '2022-02-23T11:33:58.552Z', 'end': '2022-12-16T00:52:16.126Z', 'name': 'Battery 5'}]
         
-        actual = self.endpoint.outages_with_name(filtered_outages, devices)
+        actual = self.kraken.enrich_outages_with_names(outages, devices)
 
         self.assertEqual(expected,actual)
+
 
 
 if __name__ == '__main__':
