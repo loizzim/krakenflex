@@ -1,5 +1,5 @@
 import unittest
-from class_endpoint import Kraken
+from kraken import Kraken
 
 class Test_Kraken(unittest.TestCase):
     def setUp(self):
