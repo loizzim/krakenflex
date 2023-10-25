@@ -8,7 +8,7 @@ class Kraken:
         self.headers = {"x-api-key": "EltgJ5G8m44IzwE6UN2Y4B4NjPW77Zk6FJK3lL23"}
         
         self.session = requests.Session()
-        retries = Retry(total = 3, status_forcelist = [500], backoff_factor = 1, allowed_methods=frozenset(['GET', 'POST']))
+        retries = Retry(total = 3, status_forcelist = [500], backoff_factor = 1, allowed_methods = frozenset(['GET', 'POST']))
         self.session.mount('https://', HTTPAdapter(max_retries=retries))
 
     def main(self):
