@@ -38,3 +38,8 @@ The code includes a retry mechanism to handle failure responses when the API ret
 
 # Errors
 The code raises an exception if the API returns HTTP status code which is not successful (200) and different from 500. It also raises an exception if the maximum number of retries has been performed without a successful response.
+
+# Improvements
+- The API key shouldn't be committed as it is considered sensitive data. I have left it there for the purpose of this exercise.
+- Log statements to keep track of the code flow.
+- Improve test coverage.
