@@ -2,58 +2,39 @@
 
 Before running the code, make sure you have the following installed:
 
-Python (>=3.7)
-The requests library
-You can install the required library using pip:
-
-bash:
-pip install requests
+* Python 3.8.0
+* Requests (info about installation can be found at https://requests.readthedocs.io/)
 
 # Configuration
-The code requires configuration for the Kraken API base URL and an API key. You can set these in the Kraken class constructor:
+The code requires configuration for the Kraken API base URL and API key. You can set these in the Kraken class constructor:
 
-python
+```python
 self.base_url = "https://api.krakenflex.systems/interview-tests-mock-api/v1"
 self.headers = {"x-api-key": "Your-API-Key-Here"}
-
+```
 
 # Usage
-To use the code, follow these steps:
-Run the Kraken.py to:
+To run the code execute: `python kraken.py`
+The execution will:
 
-1)Create an instance of the Kraken class
+1) Create an instance of the Kraken class
 
-2)Fetch outage data from the API
+2) Fetch outages data from the API
 
-3)Fetch device information from the API
+3) Fetch devices information from the API
 
-4)Extract device IDs from the device information
+4) Extract device IDs from the devices information
 
-5)Filter outages based on device IDs and begin time
+5) Filter outages based on device ID and begin timestamp
 
-6)Enrich outages with device names
+6) Enrich outages with device names
 
-6)Post the enriched outage data back to the API
+7) Post the enriched outage data back to the API
 
-
-python:
-
-
-if __name__ == "__main__":
-  Kraken().main()
+To run the tests execute: `python kraken_test.py`
     
 # Retry Mechanism
-The code includes a retry mechanism to handle transient errors when making API requests. It retries a request up to three times in case of a 500 status code.
+The code includes a retry mechanism to handle failure responses when the API returns a 500 HTTP response code. It retries the request up to three times.
 
-# Error Handling
-The code provides basic error handling for failed API requests. If a request fails, an exception is raised, and the execution is interrupted.
-
-# Testing
-The file Kraken_test.py contains unit test code to test the methods in the class Kraken
-
-#API Endpoints
-Make sure the API endpoints used in the code match your specific requirements:
-
-outages: Endpoint for fetching outage data.
-site-info/norwich-pear-tree: Endpoint for fetching device information.
-site-outages/norwich-pear-tree: Endpoint for posting enriched outage data.
+# Errors
+The code raises an exception if the API returns HTTP status code which is not successful (200) and different from 500. It also raises an exception if the maximum number of retries has been performed without a successful response.
